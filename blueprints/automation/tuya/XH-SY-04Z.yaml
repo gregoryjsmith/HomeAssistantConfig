@@ -1,6 +1,6 @@
 blueprint:
   name: Moes XH-SY-04Z 4 Button Remote (MQTT)
-  description: "Uses Zigbee2MQTT action topic directly."
+  description: "Uses Zigbee2MQTT action topic directly, with a common target."
   domain: automation
 
   input:
@@ -10,6 +10,12 @@ blueprint:
       default: "zigbee2mqtt/Moes Scene Remote 1/action"
       selector:
         text:
+
+    target:
+      name: Common target
+      description: "Target used by the button actions."
+      selector:
+        target:
 
     button_1_single:
       name: Button 1 Single
@@ -92,6 +98,7 @@ trigger:
 
 variables:
   command: "{{ trigger.payload }}"
+  target: !input target
 
 action:
   - choose:
