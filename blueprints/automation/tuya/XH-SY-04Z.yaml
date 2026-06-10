@@ -1,14 +1,15 @@
 blueprint:
-  name: Moes XH-SY-04Z 4 Button Remote
-  description: Zigbee2MQTT blueprint for Moes XH-SY-04Z 4 button remote.
+  name: Moes XH-SY-04Z 4 Button Remote - Zigbee2MQTT MQTT
+  description: Uses zigbee2mqtt/<device name>/action topic directly.
   domain: automation
 
   input:
-    action_sensor:
-      name: Action sensor
+    mqtt_topic:
+      name: MQTT action topic
+      description: Example: zigbee2mqtt/Moes Scene Remote 1/action
+      default: zigbee2mqtt/Moes Scene Remote 1/action
       selector:
-        entity:
-          domain: sensor
+        text:
 
     button_1_single:
       name: Button 1 single
@@ -66,16 +67,12 @@ mode: restart
 max_exceeded: silent
 
 trigger:
-  - platform: state
-    entity_id: !input action_sensor
-
-condition:
-  - condition: template
-    value_template: "{{ trigger.to_state.state not in ['unknown', 'unavailable', '', None] }}"
+  - platform: mqtt
+    topic: !input mqtt_topic
 
 action:
   - variables:
-      command: "{{ trigger.to_state.state }}"
+      command: "{{ trigger.payload }}"
 
   - choose:
       - conditions: "{{ command == '1_single' }}"
